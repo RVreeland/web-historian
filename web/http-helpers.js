@@ -17,7 +17,7 @@ exports.serveAssets = function(res, asset, callback) {
   var assetPathName = '';
 
   if (asset === 'index.html') {
-    assetPathName = __dirname + "/public/index.html";
+    assetPathName = archive.paths.siteAssets + "/" + asset;
   } //else if (/*if sites.txt has asset listed*/) {
     // assetPathName = __dirname + "../archives/sites/" + asset;
   // } else {
