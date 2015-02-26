@@ -13,6 +13,23 @@ exports.headers = headers = {
 exports.serveAssets = function(res, asset, callback) {
   // Write some code here that helps serve up your static files!
   // (Static files are things like html (yours or archived from others...), css, or anything that doesn't change often.)
+
+  var assetPathName = '';
+
+  if (asset === 'index.html') {
+    assetPathName = __dirname + "/public/index.html";
+  } //else if (/*if sites.txt has asset listed*/) {
+    // assetPathName = __dirname + "../archives/sites/" + asset;
+  // } else {
+    // append asset to sites.txt
+    // add html file to sites folder
+ // }
+  fs.readFile(assetPathName, 'utf8', function(err, assetData) {
+    // console.log(assetData);
+    res.end(assetData);
+  });
+
+
 };
 
 
