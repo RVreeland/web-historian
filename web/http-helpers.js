@@ -13,23 +13,56 @@ exports.headers = headers = {
 exports.serveAssets = function(res, asset, callback) {
   // Write some code here that helps serve up your static files!
   // (Static files are things like html (yours or archived from others...), css, or anything that doesn't change often.)
+  console.log('in serveAssets');
 
-  var assetPathName = '';
+  res.writeHead(200, headers);
 
-  if (asset === 'index.html') {
-    assetPathName = archive.paths.siteAssets + "/" + asset;
-  } //else if (/*if sites.txt has asset listed*/) {
-    // assetPathName = __dirname + "../archives/sites/" + asset;
-  // } else {
-    // append asset to sites.txt
-    // add html file to sites folder
- // }
-  fs.readFile(assetPathName, 'utf8', function(err, assetData) {
-    // console.log(assetData);
+  fs.readFile(asset, 'utf8', function(err, assetData) {
     res.end(assetData);
   });
+};
 
+// exports.checkAssets = function(res, asset, callback) {
+//   var assetPathName = '';
+//   console.log('in checkAssets');
+//   if (archive.isUrlInList(asset) && archive.isUrlArchived(asset)) {
+//     assetPathName = archive.paths.archivedSites + asset;
+//     module.exports.serveAssets(res, assetPathName, callback);
+//   } else if (archive.isUrlInList(asset) && !archive.isUrlArchived(asset)) {
+//     //redirect to loading page
+//     res.statusCode = 302;
+//     res.redirect('/public/loading.html');
+//   } else {
+//     // append asset to sites.txt
+//     // add html file to sites folder
+//   }
+// };
+//
+exports.getData = function(req, res, callback) {
+  var data = '';
+  req.on('data', function(chunk) {
+    data += chunk;
+  });
+  req.on('end', function() {
+    data = data.slice(4);
+    helpers.checkAssets(res, data);
+  });
+};
 
+exports.sendResponse = function(response, obj, status){
+  status = status || 200;
+  response.writeHead(status, headers);
+  response.end(obj);
+};
+
+exports.sendRedirect = function(response, location, status){
+  status = status || 302;
+  response.writeHead(status, {Location: location});
+  response.end();
+};
+
+exports.send404 = function(response){
+  exports.sendResponse(response, '404: Page not found', 404);
 };
 
 
