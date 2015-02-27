@@ -14,9 +14,7 @@ exports.serveAssets = function(res, asset, callback) {
   // Write some code here that helps serve up your static files!
   // (Static files are things like html (yours or archived from others...), css, or anything that doesn't change often.)
   console.log('in serveAssets');
-
   res.writeHead(200, headers);
-
   fs.readFile(asset, 'utf8', function(err, assetData) {
     res.end(assetData);
   });
@@ -37,7 +35,7 @@ exports.serveAssets = function(res, asset, callback) {
 //     // add html file to sites folder
 //   }
 // };
-//
+
 exports.getData = function(req, res, callback) {
   var data = '';
   req.on('data', function(chunk) {
@@ -45,7 +43,7 @@ exports.getData = function(req, res, callback) {
   });
   req.on('end', function() {
     data = data.slice(4);
-    helpers.checkAssets(res, data);
+    callback(data);
   });
 };
 

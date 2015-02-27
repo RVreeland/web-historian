@@ -24,27 +24,37 @@ var actions = {
     });
   },
   'POST': function(req, res) {
-    helpers.getData(req, res);
+    helpers.getData(req, function(url) {
+      archive.isUrlInList(url, function(found) {
+        if( found ){ // yes:
+          // check to see if archived
+          archive.isUrlArchived(url, function(exists) {
+            if( exists ) { // yes:
+              // redirect to scraped page
+              helpers.sendRedirect(response, '/'+url);
+            } else { // no:
+              //redirect to loading page
+              helpers.sendRedirect(response, '/loading.html');
+            }
+          });
+        } else { // no:
+          // append to list of sites
+          archive.addUrlToList(url, function() {
+            // redirect to loading page
+            response.sendRedirect(response, '/loading.html');
+          });
+        }
+      });
+    });
   }
 };
 
 
-
 exports.handleRequest = function (req, res) {
-
-// archive.readListOfUrls();
-archive.isUrlInList('www.google.com', function(result) {
-  console.log(result);
-});
-// archive.isUrlInList('www.aol.com');
-
   if (actions[req.method]) {
     actions[req.method](req, res);
   } else {
-    // send 404;
+    helpers.send404(res);    // send 404;
   }
-
-  // helpers.serveAssets(res, 'www.google.com');
-  // res.end(archive.paths.list);
 };
 
